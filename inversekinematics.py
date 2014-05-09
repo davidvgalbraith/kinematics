@@ -40,7 +40,7 @@ class Point:
         return np.inf
 
     def __str__(self): 
-        return "Point: " + str(self.x) + ", " + str(self.y) + ", " + str(self.z)
+        return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
 
 class BallJoint:
     #position is the location of this ball joint's inboard joint, length is its length, theta and phi are spherical angles
@@ -85,7 +85,7 @@ class BallJoint:
 
 #magic
 def inverseKinematics():
-    time.sleep(0.5)
+    time.sleep(0.1)
     global joints
     global goal
     global iterations
@@ -96,13 +96,22 @@ def inverseKinematics():
     if d.norm() > goaldistance:
         mistakes += 1
     if mistakes > 7:
-        print "Couldn't reach! I'm so sorry."
+        print "Giving up on " + str(goal)
+        mistakes = 0
+        iterations = 1
+        goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
+        glutPostRedisplay()
         return
-    if d.norm() < 0.05:
-        print "That's as good as she's gonna get, did it in " + str(iterations) + " iterations."
-        return
+    if d.norm() < 0.1:
+        print "Reached " + str(goal)
+        iterations = 1
+        mistakes = 0
+        goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
+        glutPostRedisplay()
+        return  
     if iterations > 100:
-        print "I give up. I hope you're happy."
+        print "I give up. " + str(goal) + " is too hard to reach. I hope you're happy."
+        glutLeaveMainLoop()
         return
     iterations += 1
     goaldistance = d.norm()
@@ -134,7 +143,6 @@ def inverseKinematics():
     glutPostRedisplay()
 
 
-joints = []
 iterations = 1
 mistakes = 0
 goaldistance = np.Infinity
@@ -183,32 +191,26 @@ def myDisplay():
         root = root.child
     glFlush()
     glutSwapBuffers()
-    inverseKinematics()
-
-
-    
+    inverseKinematics()   
 
 def myReshape(w, h):
     glViewport (0,0,w,h);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glutPostRedisplay();
 
-def getCommand():
-    joint = raw_input("Which joint would you like to rotate (0=origin, 3=leaf)? ")
-    theta = raw_input("What polar angle from the z-axis(theta) do you want? ")
-    phi = raw_input("What rotation about the z-axis do you want? ")
-    try:
-        joints[int(joint)].rotate(np.radians(float(theta)), np.radians(float(phi)))
-    except ValueError:
-        print "Your input is crap! CRAP! FUCK you!"
-        exit()
-    glutPostRedisplay()
+def signedRandom():
+    j = np.random.random()
+    sign = np.random.randint(-1, 2)
+    while sign == 0:
+        sign = np.random.randint(-1, 2)
+    return j * sign
+
 
 if __name__ == "__main__":
     global goal
-    goalstring = raw_input("\nWhere would you like me to point within the sphere of radius five centered at the origin?\nFormat as for instance:\n1 2 3\n to get to the point (1, 2, 3):\n")
-    goalarray = goalstring.split(" ")
-    goal = Point(float(goalarray[0]), float(goalarray[1]), float(goalarray[2]))
+    global joints
+    joints = []
+    goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
     d = BallJoint(Point(0, 0, 4), 1, 0, 0)
     c = BallJoint(Point(0, 0, 2), 2, 0, 0, d)
     b = BallJoint(Point(0, 0, 1), 1, 0, 0, c)
@@ -219,14 +221,14 @@ if __name__ == "__main__":
     joints.append(d)
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(500, 500)
+    glutInitWindowSize(700, 700)
     glutInitWindowPosition(0, 0)
     glutCreateWindow("I love inverse kinematics")
     glutDisplayFunc(myDisplay)
     glutReshapeFunc(myReshape)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(45, 1, 8, 16)
-    gluLookAt(7, 7, 7, 0, 0, 0, 0, 0, 1)
-
+    gluPerspective(45, 1, 4, 18)
+    gluLookAt(8, 8, 8, 0, 0, 0, 0, 0, 1)
+    
     glutMainLoop()
