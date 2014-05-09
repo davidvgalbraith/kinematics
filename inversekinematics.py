@@ -85,19 +85,27 @@ class BallJoint:
 
 #magic
 def inverseKinematics():
-    time.sleep(2)
+    time.sleep(0.5)
     global joints
     global goal
     global iterations
+    global mistakes
+    global goaldistance
     e = joints[0].effector()
     d = goal.minus(e)
+    if d.norm() > goaldistance:
+        mistakes += 1
+    if mistakes > 7:
+        print "Couldn't reach! I'm so sorry."
+        return
     if d.norm() < 0.05:
         print "That's as good as she's gonna get, did it in " + str(iterations) + " iterations."
         return
     if iterations > 100:
-        print "Point is out of reach, but I did my best..."
+        print "I give up. I hope you're happy."
         return
     iterations += 1
+    goaldistance = d.norm()
     jack = []
     for a in np.arange(3):
         dimension = []
@@ -121,13 +129,16 @@ def inverseKinematics():
     j = 0
     normalizedalpha = dalpha/(dalpha.mean() + np.random.random() / 1000)/10
     for k in np.arange(0, len(normalizedalpha), 2):
-        joints[j].rotate(dalpha[k, 0], dalpha[k+1, 0])
+        joints[j].rotate(dalpha[k, 0]/10, dalpha[k+1, 0]/10)
         j += 1
     glutPostRedisplay()
 
 
 joints = []
 iterations = 1
+mistakes = 0
+goaldistance = np.Infinity
+
 def myDisplay():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
