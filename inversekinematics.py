@@ -195,7 +195,7 @@ def getCommand():
 
 if __name__ == "__main__":
     global goal
-    goalstring = raw_input("\nWhere would you like me to point within the circle of radius five centered at the origin?\n Format as for instance:\n1 2 3\n to get to the point (1, 2, 3):\n")
+    goalstring = raw_input("\nWhere would you like me to point within the sphere of radius five centered at the origin?\nFormat as for instance:\n1 2 3\n to get to the point (1, 2, 3):\n")
     goalarray = goalstring.split(" ")
     goal = Point(float(goalarray[0]), float(goalarray[1]), float(goalarray[2]))
     d = BallJoint(Point(0, 0, 4), 1, 0, 0)
