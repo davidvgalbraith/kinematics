@@ -93,26 +93,26 @@ def inverseKinematics():
     global goaldistance
     e = joints[0].effector()
     d = goal.minus(e)
-    if d.norm() > goaldistance:
-        mistakes += 1
-    if mistakes > 7:
+    #if d.norm() > goaldistance:
+    #    mistakes += 1
+    """if mistakes > 7:
         print "Giving up on " + str(goal)
         mistakes = 0
         iterations = 1
         goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
         glutPostRedisplay()
-        return
+        return 
     if d.norm() < 0.1:
         print "Reached " + str(goal)
         iterations = 1
         mistakes = 0
         goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
         glutPostRedisplay()
-        return  
-    if iterations > 100:
-        print "I give up. " + str(goal) + " is too hard to reach. I hope you're happy."
-        glutLeaveMainLoop()
-        return
+        return """ 
+    #if iterations > 100:
+    #    print "I give up. " + str(goal) + " is too hard to reach. I hope you're happy."
+    #    glutLeaveMainLoop()
+    #    return
     iterations += 1
     goaldistance = d.norm()
     jack = []
@@ -140,6 +140,9 @@ def inverseKinematics():
     for k in np.arange(0, len(normalizedalpha), 2):
         joints[j].rotate(dalpha[k, 0]/10, dalpha[k+1, 0]/10)
         j += 1
+    goal = goal.plus(Point(signedRandom() / 5, signedRandom() / 5, signedRandom() / 5))
+    if(goal.norm() > 6):
+        goal = Point(signedRandom(), signedRandom(), signedRandom())
     glutPostRedisplay()
 
 
@@ -211,10 +214,10 @@ if __name__ == "__main__":
     global joints
     joints = []
     goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
-    d = BallJoint(Point(0, 0, 4), 1, 0, 0)
-    c = BallJoint(Point(0, 0, 2), 2, 0, 0, d)
-    b = BallJoint(Point(0, 0, 1), 1, 0, 0, c)
-    a = BallJoint(Point(0, 0, 0), 1, 0, 0, b)
+    d = BallJoint(Point(0, 0, 4.5), 0.5, 0, 0)
+    c = BallJoint(Point(0, 0, 3.5), 1, 0, 0, d)
+    b = BallJoint(Point(0, 0, 0.5), 3, 0, 0, c)
+    a = BallJoint(Point(0, 0, 0), 0.5, 0, 0, b)
     joints.append(a)
     joints.append(b)
     joints.append(c)
