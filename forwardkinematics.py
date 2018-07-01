@@ -11,8 +11,8 @@ class Point:
 
     def plus(self, p):
         return Point(self.x + p.x, self.y + p.y, self.z + p.z)
-    
-    def __str__(self): 
+
+    def __str__(self):
         return "Point: " + str(self.x) + ", " + str(self.y) + ", " + str(self.z)
 
 class BallJoint:
@@ -101,7 +101,7 @@ def getCommand():
     try:
         joints[int(joint)].rotate(np.radians(float(theta)), np.radians(float(phi)))
     except ValueError:
-        print "Your input is crap! CRAP! FUCK you!"
+        print "Sorry, I didn't understand. Goodbye."
         exit()
     glutPostRedisplay()
 

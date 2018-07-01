@@ -21,13 +21,13 @@ class Point:
     def normalize(self):
         norm = np.sqrt(self.x **2 + self.y ** 2 + self.z ** 2)
         if norm == 0:
-            print "GODDAMMiT YOU ALWYAS DO THIS"
+            print "Oh no, I can't divide by zero... Goodbye."
             exit()
         return Point(self.x/norm, self.y/norm, self.z/norm)
-    
+
     def norm(self):
         norm = np.sqrt(self.x **2 + self.y ** 2 + self.z ** 2)
-        return norm        
+        return norm
 
     def attrByNum(self, num):
         if (num == 0):
@@ -36,10 +36,10 @@ class Point:
             return self.y
         if num == 2:
             return self.z
-        print "Idiot! Idiot! Caller is an Idiot!"
+        print "That's not a real attribute"
         return np.inf
 
-    def __str__(self): 
+    def __str__(self):
         return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
 
 class BallJoint:
@@ -101,14 +101,14 @@ def inverseKinematics():
         iterations = 1
         goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
         glutPostRedisplay()
-        return 
+        return
     if d.norm() < 0.1:
         print "Reached " + str(goal)
         iterations = 1
         mistakes = 0
         goal = Point(signedRandom() * 4, signedRandom() * 4, signedRandom() * 4)
         glutPostRedisplay()
-        return """ 
+        return """
     #if iterations > 100:
     #    print "I give up. " + str(goal) + " is too hard to reach. I hope you're happy."
     #    glutLeaveMainLoop()
@@ -124,7 +124,7 @@ def inverseKinematics():
             cop.rotate(dalpha, 0)
             df = -e.attrByNum(a) + cop.effector().attrByNum(a)
             dimension.append(df / dalpha)
-            
+
             cop = joints[b].copy()
             cop.rotate(0, dalpha)
             df = -e.attrByNum(a) + cop.effector().attrByNum(a)
@@ -194,7 +194,7 @@ def myDisplay():
         root = root.child
     glFlush()
     glutSwapBuffers()
-    inverseKinematics()   
+    inverseKinematics()
 
 def myReshape(w, h):
     glViewport (0,0,w,h);
@@ -233,5 +233,5 @@ if __name__ == "__main__":
     glLoadIdentity()
     gluPerspective(45, 1, 4, 18)
     gluLookAt(8, 8, 8, 0, 0, 0, 0, 0, 1)
-    
+
     glutMainLoop()
